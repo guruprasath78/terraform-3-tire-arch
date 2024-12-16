@@ -14,25 +14,11 @@ module "network" {
   nacl_private_rule = var.nacl_private_rule
   nacl_public_rule = var.nacl_public_rule
 }
-module "rds" {
-  source                    = "./modules/rds"
-  environment               = var.environment
-  vpc_id                    = module.network.vpc_id
-  cluster_identifier_prefix = "dummy"
-  publicly_accessible       = false
-  subnet_ids                = module.network.private_subnets_ids
-  availability_zones        = slice(module.network.availability_zones, 0,2)
-  cluster_instances         = var.cluster_instances
-  db_name                   = var.db_name
-  db_username               = var.db_username
-  db_password               = var.db_password
-}
 module "instances" {
   source                     = "./modules/instance"
   vpc_id                     = module.network.vpc_id
   subnets            = module.network.private_subnets_ids
   security-rules     = var.private-security-rules
-  security_groups_to_attach = [module.rds.rds_access_sg_id]
   environment                = var.environment
   user_data       = base64encode(local.private_userdata)
   instances          = var.private_instances

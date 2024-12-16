@@ -16,6 +16,15 @@ nacl_public_rule = {
   from_port      = 0
   to_port        = 0
   cidr_block     = "0.0.0.0/0"
+  },
+  #block ips
+  {
+  rule_number    =250
+  rule_action    = "deny"
+  protocol       = "-1"
+  from_port      = 0
+  to_port        = 0
+  cidr_block     = "152.58.220.227/32"
   }
   ],
   "outbound" = [
@@ -27,6 +36,15 @@ nacl_public_rule = {
   to_port        = 0
   cidr_block     = "0.0.0.0/0"
   }
+  #  #block ips
+  # {
+  # rule_number    =250
+  # rule_action    = "deny"
+  # protocol       = "-1"
+  # from_port      = 0
+  # to_port        = 0
+  # cidr_block     = "152.58.220.227/32"
+  # }
   ]
 }
 nacl_private_rule = {
