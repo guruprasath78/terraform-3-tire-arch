@@ -7,8 +7,8 @@ variable "security_group_ids" {
 variable "public_subnets" {
   type = list(string)
 }
-variable "instance_ids" {
-  type = list(string)
+variable "instances" {
+  type = list(any)
 }
 variable "target_group_config" {
   type = map(any)
@@ -21,4 +21,7 @@ variable "lb_sg_rules" {
   protocol = string
   cidr_blocks = list(string)
   }))
+}
+variable "lb_name" {
+  type = string
 }

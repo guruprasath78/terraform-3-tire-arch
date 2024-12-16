@@ -1,34 +1,45 @@
-variable "security-rules" {
+# variable "public-security-rules" {
+#   type=map(any)
+# }
+variable "private-security-rules" {
   type = map(any)
 }
 variable "vpc_id" {
   type = string
 }
-variable "subnets" {
+# variable "public_subnets" {
+#   type = list(any)
+# }
+variable "private_subnets" {
   type = list(any)
 }
 variable "environment" {
   type = string
 }
-variable "user_data" {
+variable "private_user_script" {
   type = any
+  description = "this user_script executed only on private instances"
 }
-variable "instances" {
+# variable "public_instances" {
+#   type = list(object({
+#     name=string,
+#     instance_type=string,
+#     ami=string,
+#     bastion=bool
+#   }))
+# }
+variable "private_instances" {
   type = list(object({
     name=string,
     instance_type=string,
     ami=string,
   }))
 }
-variable "security_groups_to_attach" {
+variable "additional_security_groups" {
   type = list(string)
   default = []
 }
 variable "iam_role" {
-  type = string
-  default = null
-}
-variable "key_pair" {
   type = string
   default = null
 }

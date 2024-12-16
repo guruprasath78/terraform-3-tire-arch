@@ -35,8 +35,16 @@ variable "cluster_instances" {
   type = list(object({
     name=string
     instance_class=string
-    promotion_tier=number
+    type=string
   }))
+  validation {
+    condition = alltrue([
+      for instance in var.cluster_instances : (
+        instance.type == "writer" || instance.type == "reader"
+      )
+    ])
+    error_message = "Each instance 'type' must be either 'writer' or 'reader'."
+  }
 }
 variable "vpc_id" {
   type = string

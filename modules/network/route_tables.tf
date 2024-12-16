@@ -1,5 +1,5 @@
 resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.vpc_kp.id
   route{
    gateway_id = aws_internet_gateway.igw.id
    cidr_block = "0.0.0.0/0"
@@ -9,7 +9,7 @@ resource "aws_route_table" "public_rt" {
   } 
 }
 resource "aws_route_table" "private-rt" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.vpc_kp.id
   route {
     gateway_id =var.nat_type=="gateway"?aws_nat_gateway.natg[0].id:null
     network_interface_id = var.nat_type=="instance"?aws_instance.nat_instance[0].primary_network_interface_id:null

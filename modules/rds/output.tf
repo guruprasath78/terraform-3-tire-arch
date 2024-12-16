@@ -5,5 +5,5 @@ output "endpoint" {
   value = local.endpoint[0]
 }
 output "rds_access_sg_id" {
-  value = aws_security_group.access-to-rds.id
+  value = aws_security_group.rds-sg.id
 }

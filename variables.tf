@@ -11,29 +11,23 @@ variable "private_subnet" {
 variable "environment" {
   type = string
 }
-variable "nacl_public_rule" {
-  type = map(list(map(string)))
-}
 
-variable "nacl_private_rule" {
-  type = map(list(map(string)))
-}
 
 #instances
-# variable "public-security-rules" {
-#   type=map(any)
-# }
+variable "public-security-rules" {
+  type=map(any)
+}
 variable "private-security-rules" {
   type = map(any)
 }
-# variable "public_instances" {
-#   type = list(object({
-#     name=string
-#     instance_type=string
-#     ami=string
-#     bastion=bool
-#   }))
-# }
+variable "public_instances" {
+  type = list(object({
+    name=string
+    instance_type=string
+    ami=string
+    bastion=bool
+  }))
+}
 variable "private_instances" {
   type = list(object({
     name=string
@@ -62,8 +56,16 @@ variable "cluster_instances" {
   type = list(object({
     name=string
     instance_class=string
-    promotion_tier=number
+    type=string
   }))
+  validation {
+    condition = alltrue([
+      for instance in var.cluster_instances : (
+        instance.type == "writer" || instance.type == "reader"
+      )
+    ])
+    error_message = "Each instance 'type' must be either 'writer' or 'reader'."
+  }
 }
 
 #alb

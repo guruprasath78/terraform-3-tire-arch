@@ -20,15 +20,38 @@ variable "nat_type" {
 }
 variable "nat_instance_rules" {
   type = map(any)
-  default = null
-}
-variable "nat_ssm_role" {
-  type = string
-}
-variable "nacl_public_rule" {
-  type = map(list(map(string)))
-}
-
-variable "nacl_private_rule" {
-  type = map(list(map(string)))
+  default = {
+    allow-all-ipv4-in={
+    type="ingress"
+    from_port="80"
+    to_port="80"
+    protocol="tcp"
+     cidr_blocks=["0.0.0.0/0"]
+    ipv6_cidr_blocks=[]
+  }
+  allow-https-ipv4-in={
+    type="ingress"
+    from_port="443"
+    to_port="443"
+    protocol="tcp"
+     cidr_blocks=["0.0.0.0/0"]
+    ipv6_cidr_blocks=[]
+  }
+  allow-aws={
+    type="ingress"
+    from_port="22"
+    to_port="22"
+    protocol="tcp"
+    cidr_blocks=["3.16.146.0/29"]
+    ipv6_cidr_blocks=[]
+  }
+  allow-all-ipv4-out={
+     type="egress"
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["0.0.0.0/0"]
+    ipv6_cidr_blocks=[]
+  }
+  }
 }

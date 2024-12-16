@@ -1,4 +1,4 @@
-resource "aws_db_subnet_group" "rds-subnet-group" {
+resource "aws_db_subnet_group" "name" {
   subnet_ids = var.subnet_ids
   name = "${var.environment}-subnet-group"
   tags = {
@@ -12,7 +12,7 @@ resource "aws_rds_cluster" "rds" {
   iam_database_authentication_enabled = true
   port = var.port
   apply_immediately = true
-  db_subnet_group_name = aws_db_subnet_group.rds-subnet-group.name
+  db_subnet_group_name = aws_db_subnet_group.name.name
   availability_zones = var.availability_zones
   database_name = var.db_name
   master_username = var.db_username
@@ -23,17 +23,17 @@ resource "aws_rds_cluster" "rds" {
 resource "aws_rds_cluster_instance" "rds" {
   apply_immediately = true
   count = length(var.cluster_instances)
-  identifier = "${var.environment}-${var.cluster_instances[count.index].name}"
+  identifier = var.cluster_instances[count.index]["name"]
   cluster_identifier = aws_rds_cluster.rds.id
-  instance_class = var.cluster_instances[count.index].instance_class
+  instance_class = var.cluster_instances[count.index]["instance_class"]
   engine = aws_rds_cluster.rds.engine
-  promotion_tier = var.cluster_instances[count.index].promotion_tier
+  promotion_tier = var.cluster_instances[count.index]["type"]=="writer"?1:0
   publicly_accessible = var.publicly_accessible
 }
 resource "aws_security_group" "rds-sg" {
   vpc_id = var.vpc_id
   tags = {
-    Name="${var.environment}-rds-sg"
+    Name="${var.environment}-rds-sg-access"
   }
 }
 resource "aws_security_group_rule" "rds-sg" {
@@ -43,13 +43,7 @@ resource "aws_security_group_rule" "rds-sg" {
   from_port = local.sg_rules[count.index].from_port
   protocol = local.sg_rules[count.index].protocol
   type = local.sg_rules[count.index].type
-  source_security_group_id = try(local.sg_rules[count.index].source_security_group_id,null)
+  source_security_group_id = try(local.sg_rules[count.index].security_group_id,null)
   cidr_blocks = try(local.sg_rules[count.index].cidr_blocks,null)
   self = try(local.sg_rules[count.index].self,null)
-}
-resource "aws_security_group" "access-to-rds" {
-  vpc_id = var.vpc_id
-  tags = {
-    Name="${var.environment}-access-to-rds"
-  }
 }

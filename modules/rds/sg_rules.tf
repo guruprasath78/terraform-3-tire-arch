@@ -7,7 +7,7 @@ locals {
   from_port = var.port
   protocol = "tcp"
   type = "ingress"
-  source_security_group_id="${aws_security_group.access-to-rds.id}"
+  self=true
     },
     {
   to_port = 0
