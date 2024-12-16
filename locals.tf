@@ -19,17 +19,14 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
-#!/bin/bash -x
+#!/bin/bash
+# Use this for your user data (script from top to bottom)
+# install httpd (Linux 2 version)
 yum update -y
-yum install -y docker
-systemctl start docker
-usermod -a -G docker ec2-user
-docker pull guruteddy/nginx
-docker pull guruteddy/rdsaws
-docker rm -f $(sudo docker ps -a -q)
-docker network create dn
-docker run -d --name python_server --network dn -e DB_HOST=${module.rds.endpoint} -e DB_USER=${var.db_username} -e DB_PASSWORD=${var.db_password} -e DB_DATABASE=${var.db_name}  --restart unless-stopped guruteddy/dokpy:latest
-docker run -d --name nginx --network dn -p80:80  --restart unless-stopped guruteddy/nginx:latest
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 --//--
   EOF
 }
